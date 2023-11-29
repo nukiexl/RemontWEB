@@ -10,6 +10,19 @@ class Client(db.Model):
     mobilephone = db.Column(db.String(12))
     email = db.Column(db.String(255))
 
+class Equipment(db.Model):
+    __tablename__ = 'equipment'
+    equipmentid = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    serialnumber = db.Column(db.String(100), nullable=False)
+    brand = db.Column(db.String(30), nullable=False)
+    model = db.Column(db.String(50), nullable=False)
+    acceptancedate = db.Column(db.Date)
+    issuedate = db.Column(db.Date)
+    warrantyenddate = db.Column(db.Date)
+    photobeforerepair = db.Column(db.String(255))
+    photoafterrepair = db.Column(db.String(255))
+    # category = db.Column(db.Integer, db.ForeignKey('equipment_categories.equipment_catid'), nullable=False)
+
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

@@ -17,23 +17,21 @@
 
 <form method="POST">
     <div class="form-outline mb-4">
-      <input type="text" name="login" class="form-control" placeholder="Email address"/>
+      <input type="text" name="login" class="form-control" placeholder="Логин"/>
     </div>
   
     <div class="form-outline mb-4">
-      <input type="password" name="password" class="form-control" placeholder="Password"/>
+      <input type="password" name="password" class="form-control" placeholder="Пароль"/>
     </div>
 
     <div class="form-outline mb-4">
-      <input type="password" name="password2" class="form-control" placeholder="Password retype"/>
+      <input type="password" name="password2" class="form-control" placeholder="Введите пароль ещё раз"/>
     </div>
   
-    <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
+    <button type="submit" class="btn btn-primary btn-block mb-4">Регистрация</button>
 
     <div class="text-center">
-      <!-- <a href="{{ url_for('login') }}">login</a>
-      <input type="submit" value="Register"> -->
-      <p>Alreary member? <a href="/login">Login</a></p>
+      <p>Уже зарегестрированы? <a href="/login">Авторизация</a></p>
     </div>
   </form>
   {% endblock %}

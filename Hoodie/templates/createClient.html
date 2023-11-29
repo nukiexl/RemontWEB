@@ -1,0 +1,30 @@
+{% extends 'base.html' %} 
+
+{% block title %}
+<title>Новый заказ</title>
+{% endblock %} 
+
+{% block body %}
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+{% endwith %}
+
+<div class="container">
+    <form method="post">
+        <input style= "margin-top: 20px" class="form-control" type="text" name="lastname" id="lastname" placeholder="Фамилия"><br>
+        <input class="form-control" type="text" name="firstname" id="firstname" placeholder="Имя"><br>
+        <input class="form-control" type="text" name="middlename" id="middlename" placeholder="Отчество"><br>
+        <input class="form-control" type="text" name="mobilephone" id="mobilephone" placeholder="Номер телефона"><br>
+        <input class="form-control" type="text" name="email" id="email" placeholder="Электронная почта"><br>
+        <button class="btn btn-success" type="submit">Добавить клиента</button><br>
+    </form>
+</div>
+
+{% endblock %}

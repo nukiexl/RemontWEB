@@ -8,12 +8,34 @@
 
 <div class="container">
     <form method="post">
-        <input class="form-control" type="text" name="lastname" id="lastname" placeholder="Фамилия"><br>
-        <input class="form-control" type="text" name="firstname" id="firstname" placeholder="Имя"><br>
-        <input class="form-control" type="text" name="middlename" id="middlename" placeholder="Отчество"><br>
-        <input class="form-control" type="text" name="mobilephone" id="mobilephone" placeholder="Номер телефона"><br>
-        <input class="form-control" type="text" name="email" id="email" placeholder="Электронная почта"><br>
-        <button class="btn btn-success" type="submit">Добавить клиента</button><br>
+        <!-- <label for="client">Выберите клиента:</label>
+        <select style="height: 45px" name="client" id="client">
+            {% for client in clients %}
+                <option value="{{ client.id }}">{{ client.lastname }}, {{ client.firstname }}</option>
+            {% endfor %}
+        </select> -->
+        <a class="btn btn-primary" href="/createClient">Добавить клиента</a>
+
+        <input style= "margin-top: 20px" class="form-control" type="text" name="serialnumber" id="serialnumber" placeholder="Серийный номер"><br>
+        <input class="form-control" type="text" name="brand" id="brand" placeholder="Бренд"><br>
+        <input class="form-control" type="text" name="model" id="model" placeholder="Модель"><br>
+        <label for="acceptancedate">Дата приёма:</label>
+        <input class="form-control" type="date" name="acceptancedate" id="acceptancedate"><br>
+        <label for="issuedate">Дата окончания работ:</label>
+        <input class="form-control" type="date" name="issuedate" id="issuedate"><br>
+        <label for="warrantyenddate">Дата конца гарантии:</label>
+        <input class="form-control" type="date" name="warrantyenddate" id="warrantyenddate"><br>
+        <input class="form-control" type="text" name="photobeforerepair" id="photobeforerepair" placeholder="Ссылка на фотографию до ремонта"><br>
+        <input class="form-control" type="text" name="photoafterrepair" id="photoafterrepair" placeholder="Ссылка на фотографию после ремонта"><br>
+        <!-- <label for="client">Выберите категорию:</label>
+        <select style="height: 45px" name="client" id="client">
+            {% for client in clients %}
+                <option value="{{ client.id }}">{{ client.lastname }}, {{ client.firstname }}</option>
+            {% endfor %}
+        </select><br> -->
+        <!-- <input class="form-control" type="text" name="category" id="category" placeholder="Тип"><br> -->
+        <button class="btn btn-success" type="submit">Добавить заказ</button><br>
+
     </form>
 </div>
 
