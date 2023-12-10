@@ -3,7 +3,9 @@ from flask_login import login_user, login_required, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from Hoodie import db, app
-from Hoodie.models import Client, User, Equipment, EquipmentCategory
+# from Hoodie.models import Client, User, Equipment, EquipmentCategory, PrimaryInspection, Operator, Order
+from Hoodie.models import *
+
 
 @app.route('/')
 def index():
@@ -20,18 +22,17 @@ def about():
 @app.route('/createEquipment', methods=['GET', 'POST'])
 @login_required
 def createEquipment():
-    category = EquipmentCategory.query.order_by(EquipmentCategory.equipment_catid).all()
 
     if request.method == "POST":
-        serialnumber = request.form['serialnumber']
-        brand = request.form['brand']
-        model = request.form['model']
-        acceptancedate = request.form['acceptancedate']
-        issuedate = request.form['issuedate']
-        warrantyenddate = request.form['warrantyenddate']
-        photobeforerepair = request.form['photobeforerepair']
-        photoafterrepair = request.form['photoafterrepair']
-        category = request.form['category']
+        serialnumber = request.form.get('serialnumber')
+        brand = request.form.get('brand')
+        model = request.form.get('model')
+        acceptancedate = request.form.get('acceptancedate')
+        issuedate = request.form.get('issuedate')
+        warrantyenddate = request.form.get('warrantyenddate')
+        photobeforerepair = request.form.get('photobeforerepair')
+        photoafterrepair = request.form.get('photoafterrepair')
+        equipment_catid = request.form.get('equipment_catid')
 
         new_equipment = Equipment(
             serialnumber=serialnumber,
@@ -42,7 +43,7 @@ def createEquipment():
             warrantyenddate=warrantyenddate,
             photobeforerepair=photobeforerepair,
             photoafterrepair=photoafterrepair,
-            category=category
+            equipment_catid=equipment_catid
         )
 
         try:
@@ -52,7 +53,97 @@ def createEquipment():
         except:
             return "Ошибка"
     
-    return render_template('createEquipment.html', category=category)
+    equipmentCategories = EquipmentCategory.query.all()
+
+    return render_template('createEquipment.html', equipmentCategories=equipmentCategories)
+
+@app.route('/add_primary_inspection', methods=['GET', 'POST'])
+@login_required
+def add_primary_inspection():
+    if request.method == 'POST':
+        operatorid = request.form.get('operator_id')
+        equipmentid = request.form.get('equipment_id')
+        result = request.form.get('result')
+
+        new_primary_inspection = PrimaryInspection(
+            operatorid=operatorid,
+            equipmentid=equipmentid,
+            result=result
+        )
+
+        try:
+            db.session.add(new_primary_inspection)
+            db.session.commit()
+            # flash('Primary inspection added successfully!', 'success')
+            return redirect(url_for('index'))  # Или куда вы хотите перенаправить пользователя после добавления
+        except:
+            return "Ошибка"
+
+    operators = Operator.query.all()
+    equipment = Equipment.query.all()
+
+    return render_template('add_primary_inspection.html', operators=operators, equipment=equipment)
+
+@app.route('/createOrder', methods=['GET', 'POST'])
+@login_required
+def createOrder():
+    clients = Client.query.all()
+    operators = Operator.query.all()
+    engineers = Engineer.query.all()
+    equipment = Equipment.query.all()
+    inspections = PrimaryInspection.query.all()
+    order_statuses = OrderStatus.query.all()
+
+    if request.method == "POST":
+        clientid = request.form.get('clientid')
+        operatorid = request.form.get('operatorid')
+        engineerid = request.form.get('engineerid')
+        equipmentid = request.form.get('equipmentid')
+        primaryinspectionid = request.form.get('primaryinspectionid')
+        creationdate = request.form.get('creationdate')
+        workstartdate = request.form.get('workstartdate')
+        workenddate = request.form.get('workenddate')
+        underwarranty = request.form.get('underwarranty') == 'True'
+        partscost = request.form.get('partscost')
+        laborcost = request.form.get('laborcost')
+        totalcost = request.form.get('totalcost')
+        status = request.form.get('status')
+        ord_status_id = request.form.get('ord_status_id')
+
+        new_order = Order(
+            clientid=clientid,
+            operatorid=operatorid,
+            engineerid=engineerid,
+            equipmentid=equipmentid,
+            primaryinspectionid=primaryinspectionid,
+            creationdate=creationdate,
+            workstartdate=workstartdate,
+            workenddate=workenddate,
+            underwarranty=underwarranty,
+            partscost=partscost,
+            laborcost=laborcost,
+            totalcost=totalcost,
+            status=status,
+            ord_status_id = ord_status_id
+        )
+
+        try:
+            db.session.add(new_order)
+            db.session.commit()
+            return redirect('/about')  # Измените на нужный URL
+        except Exception as e:
+            print(e)
+            return "Ошибка"
+
+    return render_template(
+        'createOrder.html',
+        clients=clients,
+        operators=operators,
+        engineers=engineers,
+        equipment=equipment,
+        inspections=inspections,
+        order_statuses=order_statuses
+    )
 
 @app.route('/create', methods=['GET', 'POST'])
 @login_required

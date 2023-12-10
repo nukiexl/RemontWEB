@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Новый осмотр
+</title>
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <form method="post">
+        
+            <label for="operatorid">Оператор:</label>
+            <select name="operatorid" id="operatorid">
+              {% for operator in operators %}
+                <option value="{{ operator.operatorid }}">{{ operator.lastname }}</option>
+              {% endfor %}
+            </select><br>
+        
+            <label for="equipmentid">Устройство:</label>
+            <select name="equipmentid" id="equipmentid">
+              {% for equip in equipment %}
+                <option value="{{ equip.equipmentid }}">{{ equip.serialnumber }} - {{ equip.brand }} - {{ equip.model }}</option>
+              {% endfor %}
+            </select><br>
+        
+            <input class="form-control" type="text" name="result" id="result" placeholder="Результат" required><br>
+        
+        <button class="btn btn-success" type="submit">Отправить</button><br>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Новый заказ
+</title>
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+  <form method="post">
+    <label for="clientid">Клиент:</label>
+    <select name="clientid" id="clientid">
+        {% for client in clients %}
+        <option value="{{ client.clientid }}">{{ client.lastname }} {{ client.firstname }}</option>
+        {% endfor %}
+    </select><br>
+
+    <label for="operatorid">Оператор:</label>
+    <select name="operatorid" id="operatorid">
+        {% for operator in operators %}
+        <option value="{{ operator.operatorid }}">{{ operator.lastname }}</option>
+        {% endfor %}
+    </select><br>
+
+    <label for="engineerid">Инженер:</label>
+    <select name="engineerid" id="engineerid">
+        {% for engineer in engineers %}
+        <option value="{{ engineer.engineerid }}">{{ engineer.lastname }} {{ engineer.firstname }}</option>
+        {% endfor %}
+    </select><br>
+
+    <label for="equipmentid">Оборудование:</label>
+    <select name="equipmentid" id="equipmentid">
+        {% for equipment in equipment %}
+        <option value="{{ equipment.equipmentid }}">{{ equipment.serialnumber }} - {{ equipment.brand }} {{ equipment.model }}</option>
+        {% endfor %}
+    </select><br>
+
+    <label for="primaryinspectionid">Первичный осмотр:</label>
+    <select name="primaryinspectionid" id="primaryinspectionid">
+        {% for inspection in inspections %}
+        <option value="{{ inspection.primaryinspectionid }}">{{ inspection.result }}</option>
+        {% endfor %}
+    </select><br>
+
+    <label for="creationdate">Дата создания:</label>
+    <input type="date" name="creationdate" id="creationdate"><br>
+
+    <label for="workstartdate">Дата начала работ:</label>
+    <input type="date" name="workstartdate" id="workstartdate"><br>
+
+    <label for="workenddate">Дата окончания работ:</label>
+    <input type="date" name="workenddate" id="workenddate"><br>
+
+    <label for="underwarranty">Гарантийный случай:</label>
+    <select name="underwarranty" id="underwarranty">
+        <option value="True">Да</option>
+        <option value="False">Нет</option>
+    </select><br>
+
+    <label for="partscost">Стоимость запчастей:</label>
+    <input type="text" name="partscost" id="partscost"><br>
+
+    <label for="laborcost">Стоимость работ:</label>
+    <input type="text" name="laborcost" id="laborcost"><br>
+
+    <label for="totalcost">Итоговая стоимость:</label>
+    <input type="text" name="totalcost" id="totalcost"><br>
+
+    <label for="status">Статус заказа:</label>
+    <input type="text" name="status" id="statuss"><br>
+
+    <label for="ord_status_id">Категория заказа:</label>
+    <select name="ord_status_id" id="ord_status_id">
+        {% for order_status in order_statuses %}
+        <option value="{{ order_status.ord_status_id }}">{{ order_status.status_name }}</option>
+        {% endfor %}
+    </select><br>
+
+    <button class="btn btn-success" type="submit">Добавить заказ</button>
+</form>
+</div>
+
+{% endblock %}
