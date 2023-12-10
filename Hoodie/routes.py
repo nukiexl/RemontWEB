@@ -3,7 +3,7 @@ from flask_login import login_user, login_required, logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from Hoodie import db, app
-from Hoodie.models import Client, User, Equipment
+from Hoodie.models import Client, User, Equipment, EquipmentCategory
 
 @app.route('/')
 def index():
@@ -17,10 +17,47 @@ def about():
     return render_template('about.html', clients=clients)
 
 
+@app.route('/createEquipment', methods=['GET', 'POST'])
+@login_required
+def createEquipment():
+    category = EquipmentCategory.query.order_by(EquipmentCategory.equipment_catid).all()
+
+    if request.method == "POST":
+        serialnumber = request.form['serialnumber']
+        brand = request.form['brand']
+        model = request.form['model']
+        acceptancedate = request.form['acceptancedate']
+        issuedate = request.form['issuedate']
+        warrantyenddate = request.form['warrantyenddate']
+        photobeforerepair = request.form['photobeforerepair']
+        photoafterrepair = request.form['photoafterrepair']
+        category = request.form['category']
+
+        new_equipment = Equipment(
+            serialnumber=serialnumber,
+            brand=brand,
+            model=model,
+            acceptancedate=acceptancedate,
+            issuedate=issuedate,
+            warrantyenddate=warrantyenddate,
+            photobeforerepair=photobeforerepair,
+            photoafterrepair=photoafterrepair,
+            category=category
+        )
+
+        try:
+            db.session.add(new_equipment)
+            db.session.commit()
+            return redirect('/about')
+        except:
+            return "Ошибка"
+    
+    return render_template('createEquipment.html', category=category)
+
 @app.route('/create', methods=['GET', 'POST'])
 @login_required
 def create():
-    # clients = Client.query.order_by(Client.lastname).all()
+    clients = Client.query.order_by(Client.lastname).all()
 
     if request.method == "POST":
         serialnumber = request.form['serialnumber']
@@ -50,7 +87,7 @@ def create():
         except:
             return "Ошибка"
     
-    return render_template('create.html')#, clients=clients)
+    return render_template('create.html', clients=clients)
 
 @app.route('/createClient', methods=['GET', 'POST'])
 @login_required

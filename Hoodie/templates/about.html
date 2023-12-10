@@ -1,19 +1,20 @@
 {% extends 'base.html' %} {% block title %}
 <title>Обо мне</title>
-{% endblock %} 
+{% endblock %}
 
 {% block body %}
 <div class="container">
-    <table class="table">
-        <tr>
-            <th>ID</th>
-            <th>Last Name</th>
-            <th>First Name</th>
-            <th>Middle Name</th>
-            <th>Mobile Phone</th>
-            <th>Email</th>
-        </tr>
-        {% for client in clients %}
+    <div class="table-responsive">
+        <table class="table text-center">
+            <tr>
+                <th>ID</th>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Middle Name</th>
+                <th>Mobile Phone</th>
+                <th>Email</th>
+            </tr>
+            {% for client in clients %}
             <tr>
                 <td>{{ client.clientid }}</td>
                 <td>{{ client.lastname }}</td>
@@ -22,7 +23,8 @@
                 <td>{{ client.mobilephone }}</td>
                 <td>{{ client.email }}</td>
             </tr>
-        {% endfor %}
-    </table>
+            {% endfor %}
+        </table>
+    </div>
 </div>
 {% endblock %}

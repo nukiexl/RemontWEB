@@ -1,22 +1,24 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 
 {% block title %}
-<title>Новый заказ</title>
-{% endblock %} 
+<title>Новое устройство
+</title>
+{% endblock %}
 
 {% block body %}
 
 <div class="container">
     <form method="post">
-        <!-- <label for="client">Выберите клиента:</label>
+        <label for="client">Категория:</label>
         <select style="height: 45px" name="client" id="client">
             {% for client in clients %}
-                <option value="{{ client.id }}">{{ client.lastname }}, {{ client.firstname }}</option>
+            <option value="{{ client.id }}">{{ client.lastname }}, {{ client.firstname }}</option>
             {% endfor %}
-        </select> -->
+        </select>
         <a class="btn btn-primary" href="/createClient">Добавить клиента</a>
 
-        <input style= "margin-top: 20px" class="form-control" type="text" name="serialnumber" id="serialnumber" placeholder="Серийный номер"><br>
+        <input style="margin-top: 20px" class="form-control" type="text" name="serialnumber" id="serialnumber"
+            placeholder="Серийный номер"><br>
         <input class="form-control" type="text" name="brand" id="brand" placeholder="Бренд"><br>
         <input class="form-control" type="text" name="model" id="model" placeholder="Модель"><br>
         <label for="acceptancedate">Дата приёма:</label>
@@ -25,8 +27,10 @@
         <input class="form-control" type="date" name="issuedate" id="issuedate"><br>
         <label for="warrantyenddate">Дата конца гарантии:</label>
         <input class="form-control" type="date" name="warrantyenddate" id="warrantyenddate"><br>
-        <input class="form-control" type="text" name="photobeforerepair" id="photobeforerepair" placeholder="Ссылка на фотографию до ремонта"><br>
-        <input class="form-control" type="text" name="photoafterrepair" id="photoafterrepair" placeholder="Ссылка на фотографию после ремонта"><br>
+        <input class="form-control" type="text" name="photobeforerepair" id="photobeforerepair"
+            placeholder="Ссылка на фотографию до ремонта"><br>
+        <input class="form-control" type="text" name="photoafterrepair" id="photoafterrepair"
+            placeholder="Ссылка на фотографию после ремонта"><br>
         <!-- <label for="client">Выберите категорию:</label>
         <select style="height: 45px" name="client" id="client">
             {% for client in clients %}

@@ -1,119 +1,68 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 
 {% block title %}
 <title>Ремонт сервис</title>
-{% endblock %} 
+{% endblock %}
 
 {% block body %}
-    <main>
-        <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
-          <div class="col">
-            <div class="card mb-4 rounded-3 shadow-sm">
-              <div class="card-header py-3">
-                <h4 class="my-0 fw-normal">Free</h4>
+<main>
+
+  <section>
+    <div class="container px-5">
+      <h2 class="text-black display-1 lh-1 mb-4 text-center">
+        Не жди.
+        <br />
+        Оставь заявку на ремонт.
+      </h2>
+      <a class="btn btn-outline-primary"
+        style="margin-left: 480px; height: 60px; width: 240px; padding-top: 10px; font-size: 24px"
+        href="https://startbootstrap.com/theme/new-age" target="_blank">Оставить
+        заявку</a>
+    </div>
+  </section>
+
+  <section style="margin-left: 320px; margin-top: 30px">
+    <div class="container px-5">
+      <div class="row gx-5 align-items-center">
+        <div class="col-lg-8 order-lg-1 mb-5 mb-lg-0">
+          <div class="container-fluid px-5">
+            <div class="row gx-5">
+              <div class="col-md-6 mb-5">
+                <div class="text-center">
+                  <i class="bi-phone icon-feature text-gradient d-block mb-3" style="font-size: 40px;"></i>
+                  <h3 class="font-alt">Смартфоны</h3>
+                  <p class="text-muted mb-0">Сломался экран, не работает камера?</p>
+                </div>
               </div>
-              <div class="card-body">
-                <h1 class="card-title pricing-card-title">$0<small class="text-body-secondary fw-light">/mo</small></h1>
-                <ul class="list-unstyled mt-3 mb-4">
-                  <li>10 users included</li>
-                  <li>2 GB of storage</li>
-                  <li>Email support</li>
-                  <li>Help center access</li>
-                </ul>
-                <button type="button" class="w-100 btn btn-lg btn-outline-primary">Sign up for free</button>
+              <div class="col-md-6 mb-5">
+                <div class="text-center">
+                  <i class="bi-laptop icon-feature text-gradient d-block mb-3" style="font-size: 40px;"></i>
+                  <h3 class="font-alt">Ноутбуки</h3>
+                  <p class="text-muted mb-0">Не включается, не держит зарядку?</p>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="col">
-            <div class="card mb-4 rounded-3 shadow-sm">
-              <div class="card-header py-3">
-                <h4 class="my-0 fw-normal">Pro</h4>
+            <div class="row">
+              <div class="col-md-6 mb-5 mb-md-0">
+                <div class="text-center">
+                  <i class="bi-tablet icon-feature text-gradient d-block mb-3" style="font-size: 40px;"></i>
+                  <h3 class="font-alt">Планшеты</h3>
+                  <p class="text-muted mb-0">Не заряжается, не работает камера?</p>
+                </div>
               </div>
-              <div class="card-body">
-                <h1 class="card-title pricing-card-title">$15<small class="text-body-secondary fw-light">/mo</small></h1>
-                <ul class="list-unstyled mt-3 mb-4">
-                  <li>20 users included</li>
-                  <li>10 GB of storage</li>
-                  <li>Priority email support</li>
-                  <li>Help center access</li>
-                </ul>
-                <button type="button" class="w-100 btn btn-lg btn-primary">Get started</button>
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card mb-4 rounded-3 shadow-sm border-primary">
-              <div class="card-header py-3 text-bg-primary border-primary">
-                <h4 class="my-0 fw-normal">Enterprise</h4>
-              </div>
-              <div class="card-body">
-                <h1 class="card-title pricing-card-title">$29<small class="text-body-secondary fw-light">/mo</small></h1>
-                <ul class="list-unstyled mt-3 mb-4">
-                  <li>30 users included</li>
-                  <li>15 GB of storage</li>
-                  <li>Phone and email support</li>
-                  <li>Help center access</li>
-                </ul>
-                <button type="button" class="w-100 btn btn-lg btn-primary">Contact us</button>
+              <div class="col-md-6">
+                <div class="text-center">
+                  <i class="bi-patch-check icon-feature text-gradient d-block mb-3" style="font-size: 40px;"></i>
+                  <h3 class="font-alt">Другие устройства</h3>
+                  <p class="text-muted mb-0">Починим все, что сможем!</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-    
-        <h2 class="display-6 text-center mb-4">Compare plans</h2>
-    
-        <div class="table-responsive">
-          <table class="table text-center">
-            <thead>
-              <tr>
-                <th style="width: 34%;"></th>
-                <th style="width: 22%;">Free</th>
-                <th style="width: 22%;">Pro</th>
-                <th style="width: 22%;">Enterprise</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row" class="text-start">Public</th>
-                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
-                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
-                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
-              </tr>
-              <tr>
-                <th scope="row" class="text-start">Private</th>
-                <td></td>
-                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
-                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
-              </tr>
-            </tbody>
-    
-            <tbody>
-              <tr>
-                <th scope="row" class="text-start">Permissions</th>
-                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
-                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
-                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
-              </tr>
-              <tr>
-                <th scope="row" class="text-start">Sharing</th>
-                <td></td>
-                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
-                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
-              </tr>
-              <tr>
-                <th scope="row" class="text-start">Unlimited members</th>
-                <td></td>
-                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
-                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
-              </tr>
-              <tr>
-                <th scope="row" class="text-start">Extra security</th>
-                <td></td>
-                <td></td>
-                <td><svg class="bi" width="24" height="24"><use xlink:href="#check"></use></svg></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </main>
+      </div>
+    </div>
+  </section>
+
+</main>
 {% endblock %}

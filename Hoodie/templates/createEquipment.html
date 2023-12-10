@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Новое устройство
+</title>
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <form method="post">
+        <label for="category">Категория:</label>
+        <select style="height: 45px" name="category" id="category">
+            {% for category in category %}
+            <option value="{{ category.id }}">{{ category.equipment_catid }}</option>
+            {% endfor %}
+        </select>
+        <a class="btn btn-primary" href="/createClient">Добавить клиента</a>
+
+        <input style="margin-top: 20px" class="form-control" type="text" name="serialnumber" id="serialnumber"
+            placeholder="Серийный номер"><br>
+        <input class="form-control" type="text" name="brand" id="brand" placeholder="Бренд"><br>
+        <input class="form-control" type="text" name="model" id="model" placeholder="Модель"><br>
+        <label for="acceptancedate">Дата приёма:</label>
+        <input class="form-control" type="date" name="acceptancedate" id="acceptancedate"><br>
+        <label for="issuedate">Дата окончания работ:</label>
+        <input class="form-control" type="date" name="issuedate" id="issuedate"><br>
+        <label for="warrantyenddate">Дата конца гарантии:</label>
+        <input class="form-control" type="date" name="warrantyenddate" id="warrantyenddate"><br>
+        <input class="form-control" type="text" name="photobeforerepair" id="photobeforerepair"
+            placeholder="Ссылка на фотографию до ремонта"><br>
+        <input class="form-control" type="text" name="photoafterrepair" id="photoafterrepair"
+            placeholder="Ссылка на фотографию после ремонта"><br>
+        <button class="btn btn-success" type="submit">Добавить заказ</button><br>
+
+    </form>
+</div>
+
+{% endblock %}

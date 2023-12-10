@@ -21,7 +21,12 @@ class Equipment(db.Model):
     warrantyenddate = db.Column(db.Date)
     photobeforerepair = db.Column(db.String(255))
     photoafterrepair = db.Column(db.String(255))
-    # category = db.Column(db.Integer, db.ForeignKey('equipment_categories.equipment_catid'), nullable=False)
+    category = db.Column(db.Integer, db.ForeignKey('equipment_categories.equipment_catid'), nullable=False)
+
+class EquipmentCategory(db.Model):
+    __tablename__ = 'equipment_categories'
+    equipment_catid = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    equipment_catname = db.Column(db.String(20), nullable=False)
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
