@@ -1,0 +1,48 @@
+{% extends 'base.html' %} {% block title %}
+<title>Список заказов</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="table-responsive">
+        <table class="table text-center">
+            <tr>
+                <th>ID заказа</th>
+                <!-- <th>ID клиента</th>
+                <th>ID оператора</th>
+                <th>ID инженера</th> -->
+                <th>ID устройства</th>
+                <th>ID первичного осмотра</th>
+                <th>Дата создания</th>
+                <!-- <th>Дата начала работ</th>
+                <th>Дата конца работ</th>
+                <th>На гарантии</th>
+                <th>Стоимость запчастей</th>
+                <th>Стоимость работ</th>
+                <th>Стоимость итоговая</th> -->
+                <th>Статус заказа</th>
+                <th>ID категории работ</th>
+            </tr>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.orderid }}</td>
+                <!-- <td>{{ order.clientid }}</td>
+                <td>{{ order.operatorid }}</td>
+                <td>{{ order.engineerid }}</td> -->
+                <td>{{ order.equipmentid }}</td>
+                <td>{{ order.primaryinspectionid }}</td>
+                <td>{{ order.creationdate }}</td>
+                <!-- <td>{{ order.workstartdate }}</td> -->
+                <!-- <td>{{ order.workenddate }}</td> -->
+                <!-- <td>{{ order.underwarranty }}</td> -->
+                <!-- <td>{{ order.partscost }}</td>
+                <td>{{ order.laborcost }}</td>
+                <td>{{ order.totalcost }}</td> -->
+                <td>{{ order.status }}</td>
+                <td>{{ order.ord_status_id }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}

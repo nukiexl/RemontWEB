@@ -12,11 +12,11 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/about')
+@app.route('/orderlist')
 @login_required
-def about():
-    clients = Client.query.order_by(Client.lastname).all()
-    return render_template('about.html', clients=clients)
+def orderlist():
+    orders = Order.query.order_by(Order.creationdate.desc()).all()
+    return render_template('orderlist.html', orders=orders)
 
 
 @app.route('/createEquipment', methods=['GET', 'POST'])
@@ -89,40 +89,41 @@ def add_primary_inspection():
 def createOrder():
     clients = Client.query.all()
     operators = Operator.query.all()
-    engineers = Engineer.query.all()
+    # engineers = Engineer.query.all()
     equipment = Equipment.query.all()
-    inspections = PrimaryInspection.query.all()
+    # inspections = PrimaryInspection.query.all()
     order_statuses = OrderStatus.query.all()
 
     if request.method == "POST":
         clientid = request.form.get('clientid')
         operatorid = request.form.get('operatorid')
-        engineerid = request.form.get('engineerid')
+        # engineerid = request.form.get('engineerid')
         equipmentid = request.form.get('equipmentid')
-        primaryinspectionid = request.form.get('primaryinspectionid')
+        # primaryinspectionid = request.form.get('primaryinspectionid')
         creationdate = request.form.get('creationdate')
-        workstartdate = request.form.get('workstartdate')
-        workenddate = request.form.get('workenddate')
-        underwarranty = request.form.get('underwarranty') == 'True'
-        partscost = request.form.get('partscost')
-        laborcost = request.form.get('laborcost')
-        totalcost = request.form.get('totalcost')
-        status = request.form.get('status')
+        # workstartdate = request.form.get('workstartdate')
+        # workenddate = request.form.get('workenddate')
+        # underwarranty = request.form.get('underwarranty') == 'True'
+        # partscost = request.form.get('partscost')
+        # laborcost = request.form.get('laborcost')
+        # totalcost = request.form.get('totalcost')
+        # status = request.form.get('status')
+        status = 'Принято'
         ord_status_id = request.form.get('ord_status_id')
 
         new_order = Order(
             clientid=clientid,
             operatorid=operatorid,
-            engineerid=engineerid,
+            # engineerid=engineerid,
             equipmentid=equipmentid,
-            primaryinspectionid=primaryinspectionid,
+            # primaryinspectionid=primaryinspectionid,
             creationdate=creationdate,
-            workstartdate=workstartdate,
-            workenddate=workenddate,
-            underwarranty=underwarranty,
-            partscost=partscost,
-            laborcost=laborcost,
-            totalcost=totalcost,
+            # workstartdate=workstartdate,
+            # workenddate=workenddate,
+            # underwarranty=underwarranty,
+            # partscost=partscost,
+            # laborcost=laborcost,
+            # totalcost=totalcost,
             status=status,
             ord_status_id = ord_status_id
         )
@@ -130,7 +131,7 @@ def createOrder():
         try:
             db.session.add(new_order)
             db.session.commit()
-            return redirect('/about')  # Измените на нужный URL
+            return redirect('/about')
         except Exception as e:
             print(e)
             return "Ошибка"
@@ -139,9 +140,9 @@ def createOrder():
         'createOrder.html',
         clients=clients,
         operators=operators,
-        engineers=engineers,
+        # engineers=engineers,
         equipment=equipment,
-        inspections=inspections,
+        # inspections=inspections,
         order_statuses=order_statuses
     )
 
@@ -264,6 +265,6 @@ def logout():
 @app.after_request
 def redirect_to_login(response):
     if response.status_code == 401:
-        return redirect(url_for('login') + '?next' + request.url)
+        return redirect(url_for('login') + '?next=' + request.url)
     
     return response
