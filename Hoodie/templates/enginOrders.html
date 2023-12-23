@@ -1,0 +1,27 @@
+{% extends 'base.html' %} {% block title %}
+<title>Список заказов</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="table-responsive">
+        <table class="table text-center">
+            <tr>
+                <th>Устройство</th>
+                <th>Стоимость работ</th>
+                <th>Категория работ</th>
+            </tr>
+            {% for order_engineer in user_orders %}
+            {% if order_engineer.order.status != 'Выполнено' %}
+            <tr>
+                <td>{{ order_engineer.order.equipment.brand }} {{ order_engineer.order.equipment.model }}</td>
+                <td>{{ order_engineer.order.laborcost }}</td>
+                <td>{{ order_engineer.order.order_status.status_name }}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+{% endblock %}

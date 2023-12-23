@@ -1,0 +1,38 @@
+{% extends 'base.html' %} {% block title %}
+<title>Список заказов</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="table-responsive">
+        <table class="table text-center">
+            <tr>
+                <th>Устройство</th>
+                <th>Первичный осмотр</th>
+                <th>Стоимость работ</th>
+                <th>Категория работ</th>
+            </tr>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.equipment.brand }} {{ order.equipment.model }}</td>
+                <td>{{ get_primary_inspection_result(order.orderid) }}</td>
+                <td>{{ order.laborcost }}</td>
+                <td>{{ order.order_status.status_name }}</td>
+                <form method="POST" action="{{ url_for('take_order', order_id=order.orderid) }}">
+                    <td>
+                        <select class="form-control" name="engineerid" id="engineerid">
+                            {% for engineer in engineers %}
+                            <option value="{{ engineer.engineerid }}">{{ engineer.lastname }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td><button type="submit" class="btn btn-success">Взять заказ</button></td>
+                    <input type="hidden" name="userid" value="{{ current_user.id }}">
+                </form>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+{% endblock %}

@@ -8,84 +8,106 @@
 {% block body %}
 
 <div class="container">
-  <form method="post">
-    <a class="btn btn-primary" href="/createClient">Добавить клиента</a><br>
-    <label for="clientid">Клиент:</label>
-    <select class="form-control" name="clientid" id="clientid">
-        {% for client in clients %}
-        <option value="{{ client.clientid }}">{{ client.lastname }} {{ client.firstname }}</option>
-        {% endfor %}
-    </select><br>
-    
+    <form method="post">
+        <a class="btn btn-primary" href="/createClient">Добавить клиента</a><br>
+        <label for="clientid">Клиент:</label>
+        <select class="form-control" name="clientid" id="clientid">
+            {% for client in clients %}
+            <option value="{{ client.clientid }}">{{ client.lastname }} {{ client.firstname }}</option>
+            {% endfor %}
+        </select><br>
 
-    <label for="operatorid">Оператор:</label>
-    <select class="form-control" name="operatorid" id="operatorid">
-        {% for operator in operators %}
-        <option value="{{ operator.operatorid }}">{{ operator.lastname }}</option>
-        {% endfor %}
-    </select><br>
-    
+        <label for="operatorid">Оператор:</label>
+        <select class="form-control" name="operatorid" id="operatorid">
+            {% for operator in operators %}
+            <option value="{{ operator.operatorid }}">{{ operator.lastname }}</option>
+            {% endfor %}
+        </select><br>
 
-    <!-- <label for="engineerid">Инженер:</label>
-    <select class="form-control" name="engineerid" id="engineerid">
-        {% for engineer in engineers %}
-        <option value="{{ engineer.engineerid }}">{{ engineer.lastname }} {{ engineer.firstname }}</option>
+        <a class="btn btn-primary" href="/createEquipment">Добавить устройство</a><br>
+        <label for="equipmentid">Устройство:</label>
+        <input list="equipmentList" name="equipmentid" id="equipmentid" class="form-control" autocomplete="off">
+        <datalist id="equipmentList">
+            {% for equipment in equipment %}
+            <option value="{{ equipment.equipmentid }}">
+                {{ equipment.serialnumber }} - {{ equipment.brand }} {{ equipment.model }}
+            </option>
+            {% endfor %}
+        </datalist><br>
+        <!-- <input list="equipmentList" name="equipmentid" id="equipmentid" class="form-control" autocomplete="off">
+    <datalist id="equipmentList">
+        {% for equipment in equipment %}
+        <option value="{{ equipment.serialnumber }} - {{ equipment.brand }} {{ equipment.model }}" data-id="{{ equipment.equipmentid }}">
+        </option>
         {% endfor %}
-    </select><br> -->
-
-    <a class="btn btn-primary" href="/createEquipment">Добавить устройство</a><br>
-    <label for="equipmentid">Устройство:</label>
-    <select class="form-control" name="equipmentid" id="equipmentid">
+    </datalist><br> -->
+        <!-- <select class="form-control" name="equipmentid" id="equipmentid">
         {% for equipment in equipment %}
         <option value="{{ equipment.equipmentid }}">{{ equipment.serialnumber }} - {{ equipment.brand }} {{ equipment.model }}</option>
         {% endfor %}
-    </select><br>
-
-    <!-- <label for="primaryinspectionid">Первичный осмотр:</label>
-    <select class="form-control" name="primaryinspectionid" id="primaryinspectionid">
-        {% for inspection in inspections %}
-        <option value="{{ inspection.primaryinspectionid }}">{{ inspection.result }}</option>
-        {% endfor %}
     </select><br> -->
 
-    <label for="creationdate">Дата создания:</label>
-    <input class="form-control" type="date" name="creationdate" id="creationdate"><br>
+        <input class="form-control" type="text" name="result" id="result" placeholder="Результат первичного осмотра"
+            required><br>
 
-    <!-- <label for="workstartdate">Дата начала работ:</label>
-    <input class="form-control" type="date" name="workstartdate" id="workstartdate"><br>
+        <label for="ord_status_id">Категория заказа:</label>
+        <select class="form-control" name="ord_status_id" id="ord_status_id">
+            {% for order_status in order_statuses %}
+            <option value="{{ order_status.ord_status_id }}">{{ order_status.status_name }}</option>
+            {% endfor %}
+        </select><br>
 
-    <label for="workenddate">Дата окончания работ:</label>
-    <input class="form-control" type="date" name="workenddate" id="workenddate"><br> -->
+        <div id="costFields" style="display: none;">
+            <label for="partscost">Стоимость запчастей:</label>
+            <input class="form-control" type="text" name="partscost" id="partscost"
+                placeholder="Стоимость запчастей"><br>
 
-    <!-- <label for="underwarranty">Гарантийный случай:</label>
-    <select class="form-control" name="underwarranty" id="underwarranty">
-        <option value="True">Да</option>
-        <option value="False">Нет</option>
-    </select><br> -->
+            <label for="laborcost">Стоимость работ:</label>
+            <input class="form-control" type="text" name="laborcost" id="laborcost" placeholder="Стоимость работ"><br>
 
-    <!-- <input class="form-control" type="text" name="partscost" id="partscost" placeholder="Стоимость запчастей"><br>
+            <label for="totalcost">Итоговая стоимость:</label>
+            <input class="form-control" type="text" name="totalcost" id="totalcost"
+                placeholder="Итоговая стоимость"><br>
+        </div>
 
-    <input class="form-control" type="text" name="laborcost" id="laborcost" placeholder="Стоимость работ"><br>
-
-    <input class="form-control" type="text" name="totalcost" id="totalcost" placeholder="Итоговая стоимость"><br> -->
-
-    <!-- <input class="form-control" type="text" name="status" id="statuss" placeholder="Статус заказа"><br> -->
-
-    <!-- <label for="status">Статус заказа</label>
-    <select class="form-control" name="status" id="statuss">
-        <option value="В работе">В работе</option>
-        <option value="Выдано">Выдано</option>
-    </select><br> -->
-
-    <label for="ord_status_id">Категория заказа:</label>
-    <select class="form-control" name="ord_status_id" id="ord_status_id">
-        {% for order_status in order_statuses %}
-        <option value="{{ order_status.ord_status_id }}">{{ order_status.status_name }}</option>
-        {% endfor %}
-    </select><br>
-
-    <button class="btn btn-success" type="submit">Добавить заказ</button>
-</form>
+        <button class="btn btn-success" type="submit">Добавить заказ</button>
+    </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var ordStatusId = document.getElementById('ord_status_id');
+        var costFields = document.getElementById('costFields');
+
+        function toggleCostFields() {
+            costFields.style.display = (ordStatusId.value == 1) ? 'block' : 'none';
+        }
+
+        ordStatusId.addEventListener('change', toggleCostFields);
+        toggleCostFields();  // Вызываем функцию при загрузке страницы
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var equipmentInput = document.getElementById('equipmentid');
+        var equipmentList = document.getElementById('equipmentList');
+
+        equipmentInput.addEventListener('input', function () {
+            var selectedOption = getSelectedOption(equipmentInput.value);
+            if (selectedOption) {
+                equipmentInput.value = selectedOption.dataset.id;
+            }
+        });
+
+        function getSelectedOption(value) {
+            for (var i = 0; i < equipmentList.options.length; i++) {
+                var option = equipmentList.options[i];
+                if (option.textContent.trim() === value.trim()) {
+                    return option;
+                }
+            }
+            return null;
+        }
+    });
+</script>
 
 {% endblock %}

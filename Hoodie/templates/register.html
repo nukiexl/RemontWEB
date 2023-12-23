@@ -27,6 +27,12 @@
     <div class="form-outline mb-4">
       <input type="password" name="password2" class="form-control" placeholder="Введите пароль ещё раз"/>
     </div>
+
+    <select class="form-control" name="role" required>
+      {% for role in roles %}
+          <option value="{{ role.roleid }}">{{ role.rolename }}</option>
+      {% endfor %}
+  </select><br>
   
     <button type="submit" class="btn btn-primary btn-block mb-4">Регистрация</button>
 

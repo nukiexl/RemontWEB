@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Новый заказ
+</title>
+{% endblock %}
+
+{% block body %}
+
+<div class="container">
+    <form method="post">
+        <label for="clientid">Клиент:</label>
+        <select class="form-control" name="clientid" id="clientid">
+            {% for client in clients %}
+            <option value="{{ client.clientid }}" {% if client.clientid==order.clientid %} selected {% endif %}>{{
+                client.lastname }} {{ client.firstname }}</option>
+            {% endfor %}
+        </select><br>
+
+
+        <label for="operatorid">Оператор:</label>
+        <select class="form-control" name="operatorid" id="operatorid">
+            {% for operator in operators %}
+            <option value="{{ operator.operatorid }}" {% if operator.operatorid==order.operatorid %} selected {% endif
+                %}>{{ operator.lastname }} {{ operator.firstname }}</option>
+            {% endfor %}
+        </select><br>
+
+        <!-- <label for="engineerid">Инженер:</label>
+        <select class="form-control" name="engineerid" id="engineerid">
+            {% for engineer in engineers %}
+            <option value="{{ engineer.engineerid }}" {% if engineer.engineerid==order.engineerid %} selected {% endif
+                %}>{{ engineer.lastname }} {{ engineer.firstname }}</option>
+            {% endfor %}
+        </select><br> -->
+
+        <label for="equipmentid">Устройство:</label>
+        <input list="equipmentList" name="equipmentid" id="equipmentid" class="form-control" autocomplete="off"
+            value="{{ order.equipmentid|default('') }}">
+        <datalist id="equipmentList">
+            {% for equipment in equipment %}
+            <option value="{{ equipment.equipmentid }}" {% if equipment.equipmentid==order.equipmentid %} selected {%
+                endif %}>
+                {{ equipment.serialnumber }} - {{ equipment.brand }} {{ equipment.model }}
+            </option>
+            {% endfor %}
+        </datalist><br>
+
+        <input class="form-control" type="text" name="result" id="result" placeholder="Результат первичного осмотра"
+            value="{% if inspection %}{{ inspection[0].result|default('') }}{% endif %}" required><br>
+
+        <label for="creationdate">Дата создания:</label>
+        <input class="form-control" type="date" name="creationdate" id="creationdate"
+            value="{{ order.creationdate|default('') }}"><br>
+
+        <label for="workstartdate">Дата начала работ:</label>
+        <input class="form-control" type="date" name="workstartdate" id="workstartdate"
+            value="{{ order.workstartdate|default('') }}"><br>
+
+        <label for="workenddate">Дата окончания работ:</label>
+        <input class="form-control" type="date" name="workenddate" id="workenddate"
+            value="{{ order.workenddate|default('') }}"><br>
+
+        <!-- <label for="underwarranty">Гарантийный случай:</label>
+        <select class="form-control" name="underwarranty" id="underwarranty">
+            <option value="1" {% if order.underwarranty %} selected {% endif %}>Да</option>
+            <option value="0" {% if not order.underwarranty %} selected {% endif %}>Нет</option>
+        </select><br> -->
+
+        <!-- <input class="form-control" type="text" name="partscost" id="partscost" placeholder="Стоимость запчастей"><br>
+
+    <input class="form-control" type="text" name="laborcost" id="laborcost" placeholder="Стоимость работ"><br>
+
+    <input class="form-control" type="text" name="totalcost" id="totalcost" placeholder="Итоговая стоимость"><br> -->
+
+        <!-- <input class="form-control" type="text" name="status" id="statuss" placeholder="Статус заказа"><br> -->
+
+        <label for="status">Статус заказа</label>
+        <select class="form-control" name="status" id="statuss">
+            <option value="Выдано">Принято</option>
+            <option value="В работе">В работе</option>
+            <option value="Выдано">Выдано</option>ы
+        </select><br>
+
+        <label for="ord_status_id">Категория заказа:</label>
+        <select class="form-control" name="ord_status_id" id="ord_status_id">
+            {% for order_status in order_statuses %}
+            <option value="{{ order_status.ord_status_id }}" {% if order_status.ord_status_id==order.ord_status_id %}
+                selected {% endif %}>{{ order_status.status_name }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="partscost">Стоимость запчастей:</label>
+        <input class="form-control" type="text" name="partscost" id="partscost" placeholder="Стоимость запчастей"
+            value="{{ order.partscost|default('') }}"><br>
+
+        <label for="laborcost">Стоимость работ:</label>
+        <input class="form-control" type="text" name="laborcost" id="laborcost" placeholder="Стоимость работ"
+            value="{{ order.laborcost|default('') }}"><br>
+
+        <label for="totalcost">Итоговая стоимость:</label>
+        <input class="form-control" type="text" name="totalcost" id="totalcost" placeholder="Итоговая стоимость"
+            value="{{ order.totalcost|default('') }}"><br>
+
+        <button class="btn btn-success" type="submit">Сохранить заказ</button>
+    </form>
+</div>
+
+<script>
+    // Получаем текущее значение даты из скрытого поля
+    var creationDateExist = "{{ order.creationdate|default('') }}";
+    var workStartDateExist = "{{ order.workstartdate|default('') }}";
+    var workEndDateExist = "{{ order.workenddate|default('') }}";
+
+    // Если есть текущее значение, устанавливаем его в поле даты
+    if (creationDateExist) {
+        document.getElementById("creationdate").value = creationDateExist;
+    }
+
+    if (workStartDateExist) {
+        document.getElementById("workstartdate").value = workStartDateExist;
+    }
+
+    if (workEndDateExist) {
+        document.getElementById("workenddate").value = workEndDateExist;
+    }
+
+</script>
+
+{% endblock %}

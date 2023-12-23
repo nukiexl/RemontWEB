@@ -1,10 +1,12 @@
 from flask import render_template, request, redirect, flash, url_for
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
+from datetime import datetime, timedelta
 
 from Hoodie import db, app
 # from Hoodie.models import Client, User, Equipment, EquipmentCategory, PrimaryInspection, Operator, Order
 from Hoodie.models import *
+from Hoodie.decorators import auth_role
 
 
 @app.route('/')
@@ -15,9 +17,59 @@ def index():
 @app.route('/orderlist')
 @login_required
 def orderlist():
-    orders = Order.query.order_by(Order.creationdate.desc()).all()
-    return render_template('orderlist.html', orders=orders)
+    orders = (Order.query
+    .join(Equipment, Order.equipmentid == Equipment.equipmentid)
+    .join(OrderStatus, Order.ord_status_id == OrderStatus.ord_status_id)
+    .order_by(Order.creationdate.desc()).all())
+    return render_template('orderlist.html', orders=orders, get_primary_inspection_result=get_primary_inspection_result)
 
+@app.route('/enginOrderlist')
+@login_required
+@auth_role(['engin', 'admin'])
+def enginOrderlist():
+    orders = (Order.query
+    .join(Equipment, Order.equipmentid == Equipment.equipmentid)
+    .join(OrderStatus, Order.ord_status_id == OrderStatus.ord_status_id)
+    .filter(Order.status == 'Принято')
+    .order_by(Order.creationdate.desc())
+    .all())
+    engineers = (Engineer.query.all())
+    return render_template('enginOrderlist.html', orders=orders, get_primary_inspection_result=get_primary_inspection_result, engineers=engineers)
+
+@app.route('/take_order/<int:order_id>', methods=['POST'])
+@login_required
+@auth_role(['engin', 'admin'])
+def take_order(order_id):
+    engineer_id = request.form.get('engineerid')
+
+    engineer = Engineer.query.get(engineer_id)
+    order = Order.query.get(order_id)
+
+    if engineer and order:
+        order.status = 'В работе'
+        order_engineer = OrderEngineer(order=order, engineer=engineer, user=current_user)
+        db.session.add(order_engineer)
+        db.session.commit()
+
+        flash('Вы успешно взяли заказ.')
+    else:
+        flash('Произошла ошибка при взятии заказа.')
+
+    return redirect(url_for('enginOrderlist'))
+
+@app.route('/enginOrders')
+@login_required
+@auth_role(['engin', 'admin'])
+def enginOrders():
+    # Находим все заказы, связанные с текущим пользователем через таблицу orders_engineers
+    user_orders = (
+        OrderEngineer.query
+        .filter_by(userid=current_user.id)
+        .join(OrderEngineer.order)
+        .all()
+    )
+
+    return render_template('enginOrders.html', user_orders=user_orders)
 
 @app.route('/createEquipment', methods=['GET', 'POST'])
 @login_required
@@ -27,9 +79,8 @@ def createEquipment():
         serialnumber = request.form.get('serialnumber')
         brand = request.form.get('brand')
         model = request.form.get('model')
-        acceptancedate = request.form.get('acceptancedate')
-        issuedate = request.form.get('issuedate')
-        warrantyenddate = request.form.get('warrantyenddate')
+        warrantyenddate = datetime.now() + timedelta(days=365)
+        # warrantyenddate = request.form.get('warrantyenddate')
         photobeforerepair = request.form.get('photobeforerepair')
         photoafterrepair = request.form.get('photoafterrepair')
         equipment_catid = request.form.get('equipment_catid')
@@ -38,8 +89,6 @@ def createEquipment():
             serialnumber=serialnumber,
             brand=brand,
             model=model,
-            acceptancedate=acceptancedate,
-            issuedate=issuedate,
             warrantyenddate=warrantyenddate,
             photobeforerepair=photobeforerepair,
             photoafterrepair=photoafterrepair,
@@ -86,35 +135,33 @@ def add_primary_inspection():
 
 @app.route('/createOrder', methods=['GET', 'POST'])
 @login_required
+@auth_role(['admin'])
 def createOrder():
     clients = Client.query.all()
     operators = Operator.query.all()
-    # engineers = Engineer.query.all()
     equipment = Equipment.query.all()
     # inspections = PrimaryInspection.query.all()
     order_statuses = OrderStatus.query.all()
+    
 
     if request.method == "POST":
         clientid = request.form.get('clientid')
         operatorid = request.form.get('operatorid')
-        # engineerid = request.form.get('engineerid')
         equipmentid = request.form.get('equipmentid')
         # primaryinspectionid = request.form.get('primaryinspectionid')
-        creationdate = request.form.get('creationdate')
+        creationdate = datetime.now()
         # workstartdate = request.form.get('workstartdate')
         # workenddate = request.form.get('workenddate')
         # underwarranty = request.form.get('underwarranty') == 'True'
         # partscost = request.form.get('partscost')
         # laborcost = request.form.get('laborcost')
         # totalcost = request.form.get('totalcost')
-        # status = request.form.get('status')
         status = 'Принято'
         ord_status_id = request.form.get('ord_status_id')
 
         new_order = Order(
             clientid=clientid,
             operatorid=operatorid,
-            # engineerid=engineerid,
             equipmentid=equipmentid,
             # primaryinspectionid=primaryinspectionid,
             creationdate=creationdate,
@@ -131,7 +178,29 @@ def createOrder():
         try:
             db.session.add(new_order)
             db.session.commit()
-            return redirect('/about')
+
+            result = request.form.get('result')
+            pe_operator_id = new_order.operatorid
+            new_inspection = PrimaryInspection(
+                operatorid=pe_operator_id,
+                equipmentid=equipmentid,
+                result=result
+            )
+
+            db.session.add(new_inspection)
+            db.session.commit()
+
+            oi_order_id = new_order.orderid
+            oi_inspection_id = new_inspection.primaryinspectionid
+            new_oi = OrderInspection(
+                orderid = oi_order_id,
+                primaryinspectionid = oi_inspection_id
+            )
+
+            db.session.add(new_oi)
+            db.session.commit()
+
+            return redirect('/orderlist')
         except Exception as e:
             print(e)
             return "Ошибка"
@@ -146,43 +215,78 @@ def createOrder():
         order_statuses=order_statuses
     )
 
-@app.route('/create', methods=['GET', 'POST'])
+@app.route('/editOrder/<int:order_id>', methods=['GET', 'POST'])
 @login_required
-def create():
-    clients = Client.query.order_by(Client.lastname).all()
+def editOrder(order_id):
+    order = Order.query.get_or_404(order_id)
+
+    clients = Client.query.all()
+    operators = Operator.query.all()
+    equipment = Equipment.query.all()
+    inspection = db.session.query(PrimaryInspection).join(OrderInspection).filter(OrderInspection.orderid == order_id).all()
+    order_statuses = OrderStatus.query.all()
 
     if request.method == "POST":
-        serialnumber = request.form['serialnumber']
-        brand = request.form['brand']
-        model = request.form['model']
-        acceptancedate = request.form['acceptancedate']
-        issuedate = request.form['issuedate']
-        warrantyenddate = request.form['warrantyenddate']
-        photobeforerepair = request.form['photobeforerepair']
-        photoafterrepair = request.form['photoafterrepair']
+        clientid = request.form.get('clientid')
+        operatorid = request.form.get('operatorid')
+        equipmentid = request.form.get('equipmentid')
+        workstartdate = request.form.get('workstartdate')
+        workenddate = request.form.get('workenddate')
+        # underwarranty = request.form.get('underwarranty')
+        # if underwarranty == "1":
+        #     underwarranty = True
+        # else:
+        #     underwarranty = False
+        partscost = request.form.get('partscost')
+        laborcost = request.form.get('laborcost')
+        totalcost = request.form.get('totalcost')
+        status = request.form.get('status')
+        ord_status_id = request.form.get('ord_status_id')
 
-        new_equipment = Equipment(
-            serialnumber=serialnumber,
-            brand=brand,
-            model=model,
-            acceptancedate=acceptancedate,
-            issuedate=issuedate,
-            warrantyenddate=warrantyenddate,
-            photobeforerepair=photobeforerepair,
-            photoafterrepair=photoafterrepair
-        )
+        order.clientid=clientid,
+        order.operatorid=operatorid,
+        order.equipmentid=equipmentid,
+        if workenddate != "":
+            order.workstartdate=workstartdate
+        if workenddate != "":
+            order.workenddate=workenddate,
+        # order.underwarranty=bool(underwarranty),
+        order.partscost=partscost,
+        order.laborcost=laborcost,
+        order.totalcost=totalcost,
+        order.status=status,
+        order.ord_status_id = ord_status_id
 
         try:
-            db.session.add(new_equipment)
             db.session.commit()
-            return redirect('/about')
-        except:
+
+            result = request.form.get('result')
+
+            if inspection:
+                inspection.result = result
+                db.session.commit()
+            else:
+                new_inspection = PrimaryInspection(operatorid=operatorid, equipmentid=equipmentid, result=result)
+                order_inspection = OrderInspection(order=order, primaryinspection=new_inspection)
+                db.session.add_all([new_inspection, order_inspection])
+                db.session.commit()
+
+            return redirect('/orderlist')
+        except Exception as e:
+            print(e)
             return "Ошибка"
-    
-    return render_template('create.html', clients=clients)
+
+    return render_template(
+        'editOrder.html',
+        order=order,
+        clients=clients,
+        operators=operators,
+        equipment=equipment,
+        inspection=inspection,
+        order_statuses=order_statuses
+    )
 
 @app.route('/createClient', methods=['GET', 'POST'])
-@login_required
 def createClient():
 
     if request.method == "POST":
@@ -212,11 +316,34 @@ def createClient():
     
     return render_template('createClient.html')
 
+@app.route('/users', methods=['GET'])
+def users():
+    users = User.query.all()
+    roles = Role.query.all()
+    return render_template('users.html', users=users, roles=roles)
+
+@app.route('/change_role/<int:user_id>', methods=['POST'])
+def change_role(user_id):
+    user = User.query.get(user_id)
+    if user:
+        role_id = request.form.get('role_id')
+        if role_id:
+            # Находим роль по ID
+            role = Role.query.get(role_id)
+            if role:
+                # Очищаем текущие роли пользователя и добавляем новую роль
+                user.roles = [role]
+                db.session.commit()
+    return redirect(url_for('users'))
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    roles = Role.query.all()
+
     login = request.form.get('login')
     password = request.form.get('password')
     password2 = request.form.get('password2')
+    roleid = request.form.get('role')
 
     if request.method == 'POST':
         if not(login or password or password2):
@@ -226,12 +353,17 @@ def register():
         else:
             hash_pwd = generate_password_hash(password)
             new_user = User(login = login, password = hash_pwd)
+            
             db.session.add(new_user)
+            db.session.commit()
+
+            new_user_role = UserRole(userid=new_user.id, roleid=roleid)
+            db.session.add(new_user_role)
             db.session.commit()
 
             return redirect(url_for('login'))
         
-    return render_template("register.html")
+    return render_template("register.html", roles=roles)
 
 
 @app.route('/login', methods=['GET', 'POST'])

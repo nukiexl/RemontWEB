@@ -1,0 +1,42 @@
+{% extends 'base.html' %} {% block title %}
+<title>Список сотрудников</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Логин</th>
+                    <th>Роль</th>
+                    <th>Изменить роль</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.login }}</td>
+                    <td>{{ user.roles[0].rolename if user.roles else 'Нет роли' }}</td>
+                    <td>
+                        <form style="display: inline" method="POST"
+                            action="{{ url_for('change_role', user_id=user.id) }}">
+                            <select class="form-select" style="width: 150px;" name="role_id">
+                                {% for role in roles %}
+                                <option value="{{ role.roleid }}">{{ role.rolename }}</option>
+                                {% endfor %}
+                            </select>
+                            <button class="btn btn-outline-primary"
+                                style="position:absolute; margin-left: 170px; margin-top: -37px"
+                                type="submit">Изменить</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

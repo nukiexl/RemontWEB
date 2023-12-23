@@ -16,8 +16,6 @@ class Equipment(db.Model):
     serialnumber = db.Column(db.String(100), nullable=False)
     brand = db.Column(db.String(30), nullable=False)
     model = db.Column(db.String(50), nullable=False)
-    acceptancedate = db.Column(db.Date)
-    issuedate = db.Column(db.Date)
     warrantyenddate = db.Column(db.Date)
     photobeforerepair = db.Column(db.String(255))
     photoafterrepair = db.Column(db.String(255))
@@ -50,7 +48,6 @@ class Operator(db.Model):
 
 class PrimaryInspection(db.Model):
     __tablename__ = 'primaryinspections'
-
     primaryinspectionid = db.Column(db.Integer, primary_key=True, autoincrement=True)
     operatorid = db.Column(db.Integer, db.ForeignKey('operators.operatorid'), nullable=False)
     equipmentid = db.Column(db.Integer, db.ForeignKey('equipment.equipmentid'), nullable=False)
@@ -65,13 +62,11 @@ class Order(db.Model):
     orderid = db.Column(db.Integer, primary_key=True, autoincrement=True)
     clientid = db.Column(db.Integer, db.ForeignKey('clients.clientid'), nullable=False)
     operatorid = db.Column(db.Integer, db.ForeignKey('operators.operatorid'), nullable=False)
-    engineerid = db.Column(db.Integer, db.ForeignKey('engineers.engineerid'))
     equipmentid = db.Column(db.Integer, db.ForeignKey('equipment.equipmentid'))
-    primaryinspectionid = db.Column(db.Integer, db.ForeignKey('primaryinspections.primaryinspectionid'))
     creationdate = db.Column(db.Date)
-    workstartdate = db.Column(db.Date)
-    workenddate = db.Column(db.Date)
-    underwarranty = db.Column(db.Boolean)
+    workstartdate = db.Column(db.Date, nullable=True)
+    workenddate = db.Column(db.Date, nullable=True)
+    underwarranty = db.Column(db.Boolean, nullable=True)
     partscost = db.Column(db.Numeric(12, 2))
     laborcost = db.Column(db.Numeric(12, 2))
     totalcost = db.Column(db.Numeric(12, 2))
@@ -80,9 +75,7 @@ class Order(db.Model):
 
     client = db.relationship('Client', backref='orders')
     operator = db.relationship('Operator', backref='orders')
-    engineer = db.relationship('Engineer', backref='orders')
     equipment = db.relationship('Equipment', backref='orders')
-    primaryinspection = db.relationship('PrimaryInspection', backref='orders')
     order_status = db.relationship('OrderStatus', backref='orders')
 
 class OrderStatus(db.Model):
@@ -90,6 +83,26 @@ class OrderStatus(db.Model):
 
     ord_status_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     status_name = db.Column(db.String(20), nullable=False)
+
+class OrderEngineer(db.Model):
+    __tablename__ = 'orders_engineers'
+    oeid = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    orderid = db.Column(db.Integer, db.ForeignKey('orders.orderid'))
+    engineerid = db.Column(db.Integer, db.ForeignKey('engineers.engineerid'))
+    userid = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    order = db.relationship('Order', backref='orders_engineers')
+    engineer = db.relationship('Engineer', backref='orders_engineers')
+    user = db.relationship('User', backref='orders_engineers')
+
+class OrderInspection(db.Model):
+    __tablename__ = 'orders_inspections'
+    oiid = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    orderid = db.Column(db.Integer, db.ForeignKey('orders.orderid'))
+    primaryinspectionid = db.Column(db.Integer, db.ForeignKey('primaryinspections.primaryinspectionid'))
+
+    order = db.relationship('Order', backref='orders_inspections')
+    primaryinspection = db.relationship('PrimaryInspection', backref='orders_inspections')
 
 class Engineer(db.Model):
     __tablename__ = 'engineers'
@@ -127,6 +140,38 @@ class User(db.Model, UserMixin):
     login = db.Column(db.String(128), nullable = False, unique = True)
     password = db.Column(db.String(255), nullable = False)
 
+    roles = db.relationship("Role", secondary="users_roles", back_populates="users")
+
+    def has_role(self, role):
+        return bool(
+            Role.query
+            .join(Role.users)
+            .filter(User.id == self.id)
+            .filter(Role.roleslug == role)
+            .count() == 1
+        )
+
+class Role(db.Model):
+    __tablename__ = 'roles'
+    roleid = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    rolename = db.Column(db.String(20), nullable = False)
+    roleslug = db.Column(db.String(20), nullable = False)
+
+    users = db.relationship("User", secondary="users_roles", back_populates="roles")
+
+class UserRole(db.Model):
+    __tablename__ = 'users_roles'
+    userid = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+    roleid = db.Column(db.Integer, db.ForeignKey('roles.roleid'), primary_key = True)
+
 @manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
+
+def get_primary_inspection_result(order_id):
+    order_inspection = OrderInspection.query.filter_by(orderid=order_id).first()
+
+    if order_inspection:
+        return order_inspection.primaryinspection.result
+    else:
+        return "Результат первичного осмотра отсутствует"
