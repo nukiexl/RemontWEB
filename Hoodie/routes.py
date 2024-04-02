@@ -135,7 +135,7 @@ def add_primary_inspection():
 
 @app.route('/createOrder', methods=['GET', 'POST'])
 @login_required
-@auth_role(['admin'])
+@auth_role(['oper', 'admin'])
 def createOrder():
     clients = Client.query.all()
     operators = Operator.query.all()
@@ -286,6 +286,29 @@ def editOrder(order_id):
         order_statuses=order_statuses
     )
 
+from flask import redirect, url_for
+
+@app.route('/deleteOrder/<int:order_id>', methods=['GET', 'POST'])
+@login_required
+def deleteOrder(order_id):
+    order = Order.query.get_or_404(order_id)
+
+    # Проверка, что текущий пользователь имеет права на удаление заказа
+    if not current_user.has_role('admin'):
+        # Редирект или возврат ошибки, в зависимости от ваших требований
+        return "Недостаточно прав для удаления заказа."
+
+    try:
+        # Удаление заказа
+        db.session.delete(order)
+        db.session.commit()
+        flash('Заказ успешно удален.')
+    except Exception as e:
+        print(e)
+        flash('Произошла ошибка при удалении заказа.')
+
+    return redirect(url_for('orderlist'))
+
 @app.route('/createClient', methods=['GET', 'POST'])
 def createClient():
 
@@ -310,7 +333,8 @@ def createClient():
             try:
                 db.session.add(new_client)
                 db.session.commit()
-                return redirect('/create')
+                flash('Ваша заявка оставлена')
+                return redirect('/createClient')
             except:
                 return redirect('/createClient')
     

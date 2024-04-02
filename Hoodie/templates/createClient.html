@@ -24,7 +24,12 @@
     <input class="form-control" type="text" name="middlename" id="middlename" placeholder="Отчество"><br>
     <input class="form-control" type="text" name="mobilephone" id="mobilephone" placeholder="Номер телефона"><br>
     <input class="form-control" type="text" name="email" id="email" placeholder="Электронная почта"><br>
+    {% if current_user.is_authenticated %}
     <button class="btn btn-success" type="submit">Добавить клиента</button><br>
+    {% else %}
+    <button class="btn btn-success" type="submit">Оставить заявку</button><br>
+    {% endif %}
+
   </form>
 </div>
 

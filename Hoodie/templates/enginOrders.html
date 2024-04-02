@@ -17,8 +17,11 @@
                 <td>{{ order_engineer.order.equipment.brand }} {{ order_engineer.order.equipment.model }}</td>
                 <td>{{ order_engineer.order.laborcost }}</td>
                 <td>{{ order_engineer.order.order_status.status_name }}</td>
+                {% endif %}
+                <td><a class="btn btn-outline-dark"
+                        href="{{ url_for('deleteOrder', order_id=order_engineer.order.orderid) }}">Сдать
+                        заказ</a></td>
             </tr>
-            {% endif %}
             {% endfor %}
         </table>
     </div>
