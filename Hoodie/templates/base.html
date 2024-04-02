@@ -19,15 +19,24 @@
 
         <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
           <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="/">Главная</a>
-          <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="/orderlist">Табличка</a>
+
         </nav>
-        <a class="btn btn-outline-primary" href="/createOrder">Добавить</a>
 
         {% if current_user.is_authenticated %}
+
+        {% if current_user.has_role('oper') or current_user.has_role('admin') %}
+        <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="/orderlist">Список заказов</a>
+        <a class="btn btn-outline-primary" href="/createOrder" style="margin-left: 10px">Новый заказ</a>
+        {% endif %}
+        {% if current_user.has_role('admin') %}
+        <a class="btn btn-outline-secondary" href="/register" style="margin-left: 10px">Новый сотрудник</a>
+        <a class="btn btn-outline-secondary" href="/users" style="margin-left: 10px">Все сотрудники</a>
+        {% endif %}
+        {% if current_user.has_role('engin') %}
+        <a class="me-3 py-2 link-body-emphasis text-decoration-none" href="/enginOrderlist">Список заказов</a>
+        <a class="btn btn-outline-primary" href="/enginOrders" style="margin-left: 10px">Мои заказы</a>
+        {% endif %}
         <a class="btn btn-outline-secondary" href="/logout" style="margin-left: 10px">Выйти</a>
-          {% if current_user.has_role('admin') %}
-          <a class="btn btn-outline-secondary" href="/register" style="margin-left: 10px">Новый сотрудник</a>
-          {% endif %}
         {% else %}
         <a class="btn btn-outline-secondary" href="/login" style="margin-left: 10px">Авторизация</a>
         {% endif %}

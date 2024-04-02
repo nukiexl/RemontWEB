@@ -7,46 +7,25 @@
     <div class="table-responsive">
         <table class="table text-center">
             <tr>
-                <!-- <th>ID заказа</th> -->
-                <!-- <th>ID клиента</th>
-                <th>ID оператора</th> -->
                 <th>Устройство</th>
                 <th>Первичный осмотр</th>
                 <th>Дата создания</th>
-                <!-- <th>Дата начала работ</th>
-                <th>Дата конца работ</th>
-                <th>На гарантии</th>
-                <th>Стоимость запчастей</th>
-                <th>Стоимость работ</th>
-                <th>Стоимость итоговая</th> -->
                 <th>Статус заказа</th>
                 <th>Категории работ</th>
             </tr>
             {% for order in orders %}
             <tr>
-                <!-- <td>{{ order.orderid }}</td> -->
-                <!-- <td>{{ order.clientid }}</td>
-                <td>{{ order.operatorid }}</td> -->
                 <td>{{ order.equipment.brand }} {{ order.equipment.model }}</td>
                 <td>{{ get_primary_inspection_result(order.orderid) }}</td>
                 <td>{{ order.creationdate }}</td>
-                <!-- <td>{{ order.workstartdate }}</td> -->
-                <!-- <td>{{ order.workenddate }}</td> -->
-                <!-- <td>{{ order.underwarranty }}</td> -->
-                <!-- <td>{{ order.partscost }}</td>
-                <td>{{ order.laborcost }}</td>
-                <td>{{ order.totalcost }}</td> -->
                 <td>{{ order.status }}</td>
                 <td>{{ order.order_status.status_name }}</td>
-                {% if current_user.has_role('admin') or current_user.has_role('engin') %}
-                <td><a class="btn btn-success">Взять заказ</a></td>
-                {% endif %}
                 {% if current_user.has_role('admin') or current_user.has_role('oper') %}
                 <td><a class="btn btn-outline-success"
                         href="{{ url_for('editOrder', order_id=order.orderid) }}">Редкатировать заказ</a></td>
                 {% endif %}
                 {% if current_user.has_role('admin') %}
-                <td><a class="btn btn-outline-dark" href="{{ url_for('editOrder', order_id=order.orderid) }}">Удалить
+                <td><a class="btn btn-outline-dark" href="{{ url_for('deleteOrder', order_id=order.orderid) }}">Удалить
                         заказ</a></td>
                 {% endif %}
             </tr>
