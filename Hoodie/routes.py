@@ -140,7 +140,6 @@ def createOrder():
     clients = Client.query.all()
     operators = Operator.query.all()
     equipment = Equipment.query.all()
-    # inspections = PrimaryInspection.query.all()
     order_statuses = OrderStatus.query.all()
     
 
@@ -148,14 +147,7 @@ def createOrder():
         clientid = request.form.get('clientid')
         operatorid = request.form.get('operatorid')
         equipmentid = request.form.get('equipmentid')
-        # primaryinspectionid = request.form.get('primaryinspectionid')
         creationdate = datetime.now()
-        # workstartdate = request.form.get('workstartdate')
-        # workenddate = request.form.get('workenddate')
-        # underwarranty = request.form.get('underwarranty') == 'True'
-        # partscost = request.form.get('partscost')
-        # laborcost = request.form.get('laborcost')
-        # totalcost = request.form.get('totalcost')
         status = 'Принято'
         ord_status_id = request.form.get('ord_status_id')
 
@@ -163,14 +155,7 @@ def createOrder():
             clientid=clientid,
             operatorid=operatorid,
             equipmentid=equipmentid,
-            # primaryinspectionid=primaryinspectionid,
             creationdate=creationdate,
-            # workstartdate=workstartdate,
-            # workenddate=workenddate,
-            # underwarranty=underwarranty,
-            # partscost=partscost,
-            # laborcost=laborcost,
-            # totalcost=totalcost,
             status=status,
             ord_status_id = ord_status_id
         )
@@ -209,9 +194,7 @@ def createOrder():
         'createOrder.html',
         clients=clients,
         operators=operators,
-        # engineers=engineers,
         equipment=equipment,
-        # inspections=inspections,
         order_statuses=order_statuses
     )
 
@@ -232,11 +215,6 @@ def editOrder(order_id):
         equipmentid = request.form.get('equipmentid')
         workstartdate = request.form.get('workstartdate')
         workenddate = request.form.get('workenddate')
-        # underwarranty = request.form.get('underwarranty')
-        # if underwarranty == "1":
-        #     underwarranty = True
-        # else:
-        #     underwarranty = False
         partscost = request.form.get('partscost')
         laborcost = request.form.get('laborcost')
         totalcost = request.form.get('totalcost')
@@ -250,7 +228,6 @@ def editOrder(order_id):
             order.workstartdate=workstartdate
         if workenddate != "":
             order.workenddate=workenddate,
-        # order.underwarranty=bool(underwarranty),
         order.partscost=partscost,
         order.laborcost=laborcost,
         order.totalcost=totalcost,
@@ -317,6 +294,8 @@ def createClient():
     return render_template('createClient.html')
 
 @app.route('/users', methods=['GET'])
+@login_required
+@auth_role(['admin'])
 def users():
     users = User.query.all()
     roles = Role.query.all()
