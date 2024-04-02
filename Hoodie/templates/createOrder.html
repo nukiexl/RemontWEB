@@ -34,18 +34,6 @@
             </option>
             {% endfor %}
         </datalist><br>
-        <!-- <input list="equipmentList" name="equipmentid" id="equipmentid" class="form-control" autocomplete="off">
-    <datalist id="equipmentList">
-        {% for equipment in equipment %}
-        <option value="{{ equipment.serialnumber }} - {{ equipment.brand }} {{ equipment.model }}" data-id="{{ equipment.equipmentid }}">
-        </option>
-        {% endfor %}
-    </datalist><br> -->
-        <!-- <select class="form-control" name="equipmentid" id="equipmentid">
-        {% for equipment in equipment %}
-        <option value="{{ equipment.equipmentid }}">{{ equipment.serialnumber }} - {{ equipment.brand }} {{ equipment.model }}</option>
-        {% endfor %}
-    </select><br> -->
 
         <input class="form-control" type="text" name="result" id="result" placeholder="Результат первичного осмотра"
             required><br>
@@ -84,7 +72,7 @@
         }
 
         ordStatusId.addEventListener('change', toggleCostFields);
-        toggleCostFields();  // Вызываем функцию при загрузке страницы
+        toggleCostFields();
     });
 
     document.addEventListener('DOMContentLoaded', function () {

@@ -26,14 +26,6 @@
             {% endfor %}
         </select><br>
 
-        <!-- <label for="engineerid">Инженер:</label>
-        <select class="form-control" name="engineerid" id="engineerid">
-            {% for engineer in engineers %}
-            <option value="{{ engineer.engineerid }}" {% if engineer.engineerid==order.engineerid %} selected {% endif
-                %}>{{ engineer.lastname }} {{ engineer.firstname }}</option>
-            {% endfor %}
-        </select><br> -->
-
         <label for="equipmentid">Устройство:</label>
         <input list="equipmentList" name="equipmentid" id="equipmentid" class="form-control" autocomplete="off"
             value="{{ order.equipmentid|default('') }}">
@@ -60,20 +52,6 @@
         <label for="workenddate">Дата окончания работ:</label>
         <input class="form-control" type="date" name="workenddate" id="workenddate"
             value="{{ order.workenddate|default('') }}"><br>
-
-        <!-- <label for="underwarranty">Гарантийный случай:</label>
-        <select class="form-control" name="underwarranty" id="underwarranty">
-            <option value="1" {% if order.underwarranty %} selected {% endif %}>Да</option>
-            <option value="0" {% if not order.underwarranty %} selected {% endif %}>Нет</option>
-        </select><br> -->
-
-        <!-- <input class="form-control" type="text" name="partscost" id="partscost" placeholder="Стоимость запчастей"><br>
-
-    <input class="form-control" type="text" name="laborcost" id="laborcost" placeholder="Стоимость работ"><br>
-
-    <input class="form-control" type="text" name="totalcost" id="totalcost" placeholder="Итоговая стоимость"><br> -->
-
-        <!-- <input class="form-control" type="text" name="status" id="statuss" placeholder="Статус заказа"><br> -->
 
         <label for="status">Статус заказа</label>
         <select class="form-control" name="status" id="statuss">
