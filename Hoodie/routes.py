@@ -4,8 +4,11 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime, timedelta
 
 from Hoodie import db, app
-# from Hoodie.models import Client, User, Equipment, EquipmentCategory, PrimaryInspection, Operator, Order
-from Hoodie.models import *
+from Hoodie.models import PrimaryInspection, get_primary_inspection_result
+from Hoodie.models import Equipment, EquipmentCategory
+from Hoodie.models import Client, Operator, Engineer
+from Hoodie.models import Order, OrderStatus, OrderInspection, OrderEngineer
+from Hoodie.models import User, UserRole, Role
 from Hoodie.decorators import auth_role
 
 
