@@ -287,8 +287,6 @@ def editOrder(order_id):
         order_statuses=order_statuses
     )
 
-from flask import redirect, url_for
-
 @app.route('/deleteOrder/<int:order_id>', methods=['GET', 'POST'])
 @login_required
 def deleteOrder(order_id):
