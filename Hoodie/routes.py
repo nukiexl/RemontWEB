@@ -1,11 +1,15 @@
+from datetime import datetime, timedelta
 from flask import render_template, request, redirect, flash, url_for
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
-from datetime import datetime, timedelta
+from sqlalchemy.exc import SQLAlchemyError
 
 from Hoodie import db, app
-# from Hoodie.models import Client, User, Equipment, EquipmentCategory, PrimaryInspection, Operator, Order
-from Hoodie.models import *
+from Hoodie.models import PrimaryInspection, get_primary_inspection_result
+from Hoodie.models import Equipment, EquipmentCategory
+from Hoodie.models import Client, Operator, Engineer
+from Hoodie.models import Order, OrderStatus, OrderInspection, OrderEngineer
+from Hoodie.models import User, UserRole, Role
 from Hoodie.decorators import auth_role
 
 
@@ -99,8 +103,8 @@ def createEquipment():
             db.session.add(new_equipment)
             db.session.commit()
             return redirect('/about')
-        except:
-            return "Ошибка"
+        except SQLAlchemyError as e:
+            return f"Произошла ошибка при выполнении операции с базой данных: {e}"
     
     equipmentCategories = EquipmentCategory.query.all()
 
@@ -123,10 +127,9 @@ def add_primary_inspection():
         try:
             db.session.add(new_primary_inspection)
             db.session.commit()
-            # flash('Primary inspection added successfully!', 'success')
-            return redirect(url_for('index'))  # Или куда вы хотите перенаправить пользователя после добавления
-        except:
-            return "Ошибка"
+            return redirect(url_for('index'))
+        except SQLAlchemyError as e:
+            return f"Произошла ошибка при выполнении операции с базой данных: {e}"
 
     operators = Operator.query.all()
     equipment = Equipment.query.all()
@@ -201,9 +204,8 @@ def createOrder():
             db.session.commit()
 
             return redirect('/orderlist')
-        except Exception as e:
-            print(e)
-            return "Ошибка"
+        except SQLAlchemyError as e:
+            return f"Произошла ошибка при выполнении операции с базой данных: {e}"
 
     return render_template(
         'createOrder.html',
@@ -272,9 +274,8 @@ def editOrder(order_id):
                 db.session.commit()
 
             return redirect('/orderlist')
-        except Exception as e:
-            print(e)
-            return "Ошибка"
+        except SQLAlchemyError as e:
+            return f"Произошла ошибка при выполнении операции с базой данных: {e}"
 
     return render_template(
         'editOrder.html',
@@ -285,8 +286,6 @@ def editOrder(order_id):
         inspection=inspection,
         order_statuses=order_statuses
     )
-
-from flask import redirect, url_for
 
 @app.route('/deleteOrder/<int:order_id>', methods=['GET', 'POST'])
 @login_required
@@ -303,9 +302,8 @@ def deleteOrder(order_id):
         db.session.delete(order)
         db.session.commit()
         flash('Заказ успешно удален.')
-    except Exception as e:
-        print(e)
-        flash('Произошла ошибка при удалении заказа.')
+    except SQLAlchemyError as e:
+        return f"Произошла ошибка при выполнении операции с базой данных: {e}"
 
     return redirect(url_for('orderlist'))
 
@@ -335,13 +333,13 @@ def createClient():
                 db.session.commit()
                 flash('Ваша заявка оставлена')
                 return redirect('/createClient')
-            except:
-                return redirect('/createClient')
+            except SQLAlchemyError as e:
+                return f"Произошла ошибка при выполнении операции с базой данных: {e}"
     
     return render_template('createClient.html')
 
 @app.route('/users', methods=['GET'])
-def users():
+def users_list():
     users = User.query.all()
     roles = Role.query.all()
     return render_template('users.html', users=users, roles=roles)
@@ -358,7 +356,7 @@ def change_role(user_id):
                 # Очищаем текущие роли пользователя и добавляем новую роль
                 user.roles = [role]
                 db.session.commit()
-    return redirect(url_for('users'))
+    return redirect(url_for('users_list'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
