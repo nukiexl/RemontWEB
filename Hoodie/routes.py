@@ -339,7 +339,7 @@ def createClient():
     return render_template('createClient.html')
 
 @app.route('/users', methods=['GET'])
-def users():
+def users_list():
     users = User.query.all()
     roles = Role.query.all()
     return render_template('users.html', users=users, roles=roles)
@@ -356,7 +356,7 @@ def change_role(user_id):
                 # Очищаем текущие роли пользователя и добавляем новую роль
                 user.roles = [role]
                 db.session.commit()
-    return redirect(url_for('users'))
+    return redirect(url_for('users_list'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
